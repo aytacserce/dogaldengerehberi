@@ -1,5 +1,6 @@
 # ciftlik
 30.05.2022
+# Practices
 . Responsive Design Principles
 . How rem and max-width Work
 . Hero
