@@ -277,16 +277,20 @@
   font-weight: 600;
 }
 
-.tag--vegetarian {
+.tag--product1 {
   background-color: #51cf66;
 }
 
-.tag--vegan {
+.tag--product2 {
+  background-color: #f7711e;
+}
+
+.tag--product3 {
   background-color: #ffd43b;
 }
 
 .tag--paleo {
-  background-color: #51cf66;
+  background-color: #f7711e;
 }
 
 .product-title {
