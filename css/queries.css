@@ -51,7 +51,7 @@
     gap: 4.8rem;
   }
 
-  .testimonials-container {
+  .updates-container {
     padding: 9.6rem 3.2rem;
   }
 }
@@ -81,7 +81,7 @@
     width: 60%;
   }
 
-  .delivered-meals {
+  .delivered-products {
     justify-content: center;
     margin-top: 3.2rem;
   }
@@ -98,7 +98,7 @@
     padding: 2.4rem 3.2rem 3.2rem 3.2rem;
   }
 
-  .section-testimonials {
+  .section-updates {
     grid-template-columns: 1fr;
   }
 
@@ -262,7 +262,7 @@
     transform: translateY(2.4rem);
   }
 
-  .testimonials {
+  .updates {
     grid-template-columns: 1fr;
   }
 
