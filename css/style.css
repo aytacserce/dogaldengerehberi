@@ -388,7 +388,7 @@
 }
 
 /*****************************************/
-/*PRODUCTS SECTION*/
+/*PRICING SECTION*/
 /*****************************************/
 
 .section-pricing {
@@ -397,8 +397,7 @@
 
 .pricing-plan {
   border-radius: 11px;
-
-  width: 75%;
+  width: 100%;
 }
 
 .pricing-plan--starter {
@@ -415,7 +414,7 @@
 }
 
 .pricing-plan--complete::after {
-  content: "Akıllı seçim";
+  content: "Yeni Hasat";
   text-transform: uppercase;
   font-size: 1.4rem;
   font-weight: 700;
@@ -608,7 +607,7 @@
   font-size: 1.4rem;
   line-height: 1.6;
   color: #767676;
-  margin-top: auto;
+  margin-top: 3rem;
 }
 
 .footer-heading {

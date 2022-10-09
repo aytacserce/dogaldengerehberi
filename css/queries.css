@@ -94,7 +94,7 @@
     font-size: 7.4rem;
   }
 
-  .meal-content {
+  .product-content {
     padding: 2.4rem 3.2rem 3.2rem 3.2rem;
   }
 
@@ -305,11 +305,11 @@
   margin-right: 1.6rem;
 }
 
-.no-flexbox-gap .meal-attribute:not(:last-child) {
+.no-flexbox-gap .product-attribute:not(:last-child) {
   margin-bottom: 2rem;
 }
 
-.no-flexbox-gap .meal-icon {
+.no-flexbox-gap .product-icon {
   margin-right: 1.6rem;
 }
 
