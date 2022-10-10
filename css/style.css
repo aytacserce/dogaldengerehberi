@@ -601,6 +601,7 @@
 .social-icon {
   height: 2.4rem;
   width: 2.4rem;
+  transform: translateY(0.7rem);
 }
 
 .copyright {
