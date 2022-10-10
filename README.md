@@ -1,5 +1,5 @@
 # dogaldengerehberi
-My first major real life project which belongs to a agricultural company. Design, layout, typography, characteristic, photos and texts created according to site owners needs.
+My first major real life project which belongs to a agricultural company. Design, layout, typography, characteristic, photos and texts created according to site owner's needs.
 
 ---
 
