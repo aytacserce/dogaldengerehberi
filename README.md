@@ -7,7 +7,7 @@ This is a live website which is used for company's products to be exhibited and 
 
 ---
 
-<img width="600px" src="https://github.com/cptsprrw/JS--Pig-Game/blob/main/Pig-Game-screenshot.png?raw=true" />
+<img width="600px" src="https://github.com/aytacserce/dogaldengerehberi/blob/main/dogaldengerehberi%20screenshot.jpg?raw=true" />
 
 ---
 
