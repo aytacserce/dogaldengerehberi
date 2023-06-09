@@ -104,6 +104,7 @@
 
   .gallery {
     grid-template-columns: repeat(6, 1fr);
+    padding-top: 1.6rem;
   }
 
   .cta {
@@ -193,6 +194,10 @@
     margin-bottom: 4.8rem;
   }
 
+  .gallery {
+    padding-top: 1.6rem;
+  }
+
   .pricing-plan {
     width: 100%;
   }
@@ -268,6 +273,7 @@
 
   .gallery {
     grid-template-columns: repeat(4, 1fr);
+    padding-top: 1.6rem;
     gap: 1.2rem;
   }
 
