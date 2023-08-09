@@ -415,7 +415,7 @@
 }
 
 .pricing-plan--complete::after {
-  content: "Tükendi";
+  content: "Yakında";
   text-transform: uppercase;
   font-size: 1.4rem;
   font-weight: 700;
