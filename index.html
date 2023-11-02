@@ -1288,8 +1288,7 @@
               <h2 class="heading-secondary">Formu doldurun, size ulaşalım</h2>
               <p class="cta-text">
                 Sağlıklı ve doğal ürünler uygun fiyatlarla kapınıza gelsin!
-                E-postalarınıza en kısa sürede dönüş yapılacak ve sipariş kaydı
-                oluşturulacaktır.
+                E-postalarınıza en kısa sürede dönüş yapılacaktır.
               </p>
               <form class="cta-form" name="sign-up" netlify>
                 <div>
@@ -1313,16 +1312,24 @@
                   />
                 </div>
                 <div>
+                  <label for="phone">Telefon Numarası</label>
+                  <input
+                    id="phone"
+                    type="tel"
+                    placeholder="5005005050"
+                    name="phone"
+                  />
+                </div>
+                <div>
                   <label for="select-which"
                     >Size hangi ürünümüzle ilgili ulaşalım?</label
                   >
                   <select id="select-which" name="select-which" required>
                     <option value="">Lütfen seçiniz</option>
-                    <option value="product1">Polen</option>
-                    <option value="product2">Yayık Tereyağ</option>
-                    <option value="product3">Bal</option>
-                    <option value="products">Birkaç Ürün :)</option>
-                    <option value="information">Genel Bilgi</option>
+                    <option value="bal">Bal</option>
+                    <option value="polen">Polen</option>
+                    <option value="birkac">Birkaç Ürün :)</option>
+                    <option value="bilgi">Genel Bilgi</option>
                   </select>
                 </div>
                 <button class="btn btn--form">E-posta Gönder</button>
