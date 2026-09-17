@@ -1,0 +1,818 @@
+<!doctype html>
+<html lang="tr">
+	<head>
+		<meta charset="UTF-8" />
+		<title>Admin - Ürün Yönetimi</title>
+
+		<style>
+			body {
+				max-width: 600px;
+				margin: 40px auto;
+				font-family: sans-serif;
+				padding: 20px;
+				background-color: #f9f9f9;
+				color: #333;
+			}
+
+			/* LOGIN EKRANI STİLLERİ */
+			#login-screen {
+				text-align: center;
+				margin-top: 100px;
+			}
+			#admin-content {
+				display: none;
+			}
+			.btn-google {
+				background-color: #4285f4;
+				color: white;
+				padding: 15px 30px;
+				border: none;
+				border-radius: 5px;
+				font-size: 18px;
+				cursor: pointer;
+				font-weight: bold;
+			}
+			.btn-google:hover {
+				background-color: #357ae8;
+			}
+			.user-info {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				background: #e9ecef;
+				padding: 10px;
+				border-radius: 8px;
+				margin-bottom: 20px;
+				font-size: 14px;
+			}
+			.btn-logout {
+				background: #dc3545;
+				color: white;
+				border: none;
+				padding: 5px 10px;
+				border-radius: 4px;
+				cursor: pointer;
+			}
+
+			/* FORM STİLLERİ */
+			h1 {
+				text-align: center;
+				margin-bottom: 30px;
+			}
+			h3 {
+				margin-top: 30px;
+				border-bottom: 1px solid #ddd;
+				padding-bottom: 5px;
+			}
+
+			.select-container {
+				background: #e9ecef;
+				padding: 15px;
+				border-radius: 8px;
+				margin-bottom: 25px;
+				border: 1px solid #ced4da;
+			}
+			select {
+				width: 100%;
+				padding: 12px;
+				font-size: 16px;
+				border-radius: 4px;
+				border: 1px solid #ccc;
+				cursor: pointer;
+				background: white;
+			}
+
+			label {
+				font-weight: bold;
+				display: block;
+				margin-top: 15px;
+				margin-bottom: 5px;
+			}
+			input,
+			textarea,
+			button {
+				width: 100%;
+				padding: 10px;
+				margin-bottom: 10px;
+				font-size: 16px;
+				box-sizing: border-box;
+				border: 1px solid #ccc;
+				border-radius: 4px;
+			}
+
+			.attr-row {
+				display: grid;
+				grid-template-columns: 1fr 2fr;
+				gap: 12px;
+				margin-bottom: 14px;
+				align-items: center;
+			}
+			.tag-selector {
+				display: flex;
+				gap: 14px;
+				margin: 10px 0 20px 0;
+			}
+			.tag-option {
+				width: 40px;
+				height: 40px;
+				border-radius: 8px;
+				cursor: pointer;
+				border: 2px solid transparent;
+				transition: 0.2s;
+			}
+			.tag-option.selected {
+				border-color: #333;
+				transform: scale(1.1);
+				box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+			}
+			.tag--product1 {
+				background-color: #51cf66;
+			}
+			.tag--product2 {
+				background-color: #f7711e;
+			}
+			.tag--product3 {
+				background-color: #ffd43b;
+			}
+
+			#preview {
+				max-width: 50%;
+				height: auto;
+				object-fit: contain;
+				border-radius: 8px;
+				display: none;
+				margin-bottom: 16px;
+				background: #eee;
+				border: 1px solid #ddd;
+			}
+
+			/* GÖRÜNÜRLÜK VE STOK STİLLERİ */
+			#isVisible {
+				border: 2px solid #0077cc;
+				color: #0077cc;
+				font-weight: bold;
+			}
+			#isSoldOut {
+				border: 2px solid #dc3545;
+				color: #dc3545;
+				font-weight: bold;
+			}
+
+			/* FİYAT ALANLARI İÇİN GRID */
+			.price-grid {
+				display: grid;
+				grid-template-columns: 1fr 1fr 1fr;
+				gap: 10px;
+			}
+		</style>
+
+		<script type="module">
+			import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+			import { getFirestore } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+			import { getStorage } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
+			import { getAuth } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+			import {
+				addDoc,
+				collection,
+				getDocs,
+				doc,
+				updateDoc,
+				setDoc,
+				getDoc,
+			} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+			const firebaseConfig = {
+				apiKey: 'AIzaSyASQTw9Vzw50z3mg5K5RFzRIE2RceAcWVM',
+				authDomain: 'dogaldengerehberi-fb258.firebaseapp.com',
+				projectId: 'dogaldengerehberi-fb258',
+				storageBucket: 'dogaldengerehberi-fb258.firebasestorage.app',
+				messagingSenderId: '477979514072',
+				appId: '1:477979514072:web:4c4e698969769ec86ff3ad',
+				measurementId: 'G-9PLDY1P2NV',
+			};
+
+			const app = initializeApp(firebaseConfig);
+			window.db = getFirestore(app);
+			window.storage = getStorage(app);
+			window.auth = getAuth(app);
+		</script>
+	</head>
+
+	<body>
+		<div id="login-screen">
+			<h2>Admin Girişi</h2>
+			<p>Devam etmek için yetkili Google hesabı ile giriş yapın.</p>
+			<button id="googleLoginBtn" class="btn-google">
+				Google ile Giriş Yap
+			</button>
+			<p id="loginError" style="color: red; margin-top: 10px"></p>
+		</div>
+
+		<div id="admin-content">
+			<div class="user-info">
+				<span id="userEmailDisplay"></span>
+				<button id="logoutBtn" class="btn-logout">Çıkış Yap</button>
+			</div>
+
+			<h1>Ürün Yönetimi</h1>
+
+			<div class="select-container">
+				<label style="margin-top: 0">Düzenlenecek Ürünü Seçin:</label>
+				<select id="productSelect">
+					<option value="new">-- Yeni Ürün Ekle --</option>
+					<option disabled>Yükleniyor...</option>
+				</select>
+			</div>
+
+			<form id="productForm">
+				<div
+					style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px"
+				>
+					<div>
+						<label>Görünürlük:</label>
+						<select id="isVisible">
+							<option value="true">✅ YAYINDA</option>
+							<option value="false">❌ GİZLİ</option>
+						</select>
+					</div>
+					<div>
+						<label>Stok Durumu:</label>
+						<select id="isSoldOut">
+							<option value="false">📦 STOKTA VAR</option>
+							<option value="true">⛔ TÜKENDİ</option>
+						</select>
+					</div>
+				</div>
+
+				<label>Başlık:</label>
+				<input id="title" placeholder="Örn: Perga" />
+
+				<label>Ürün Fotoğrafı:</label>
+				<div style="font-size: 13px; color: #666; margin-bottom: 5px">
+					* Güncelleme yaparken değiştirmezseniz eski fotoğraf kalır.
+				</div>
+				<input id="imageFile" type="file" accept="image/*" />
+				<img id="preview" />
+
+				<h3>Satış Bilgileri</h3>
+				<div class="price-grid">
+					<div>
+						<label style="font-size: 14px">Fiyat (TL):</label>
+						<input id="price" type="text" placeholder="500" />
+					</div>
+					<div>
+						<label style="font-size: 14px">İndirim (TL):</label>
+						<input id="discount" type="text" placeholder="50" />
+					</div>
+					<div>
+						<label style="font-size: 14px">Kargo (TL):</label>
+						<input id="deliveryPrice" type="text" placeholder="0" />
+					</div>
+					<div>
+						<label style="color: #e67e22; font-weight: bold"
+							>Tüm Site İçin Ücretsiz Kargo Limiti (TL)</label
+						>
+						<input
+							type="number"
+							id="freeShippingThreshold"
+							placeholder="Örn: 1000"
+						/>
+					</div>
+				</div>
+
+				<label>Sipariş Kartı Özellikleri (3 madde):</label>
+				<input
+					class="pricing-feature"
+					placeholder="1. Madde (Örn: Hızlı Teslimat)"
+				/>
+				<input
+					class="pricing-feature"
+					placeholder="2. Madde (Örn: %100 Doğal)"
+				/>
+				<input
+					class="pricing-feature"
+					placeholder="3. Madde (Örn: İade Garantisi)"
+				/>
+
+				<h3>Kart Görünümü</h3>
+				<label>Etiket Metni:</label>
+				<input id="tagText" placeholder="Örn: Arı Ürünü" />
+
+				<label>Etiket Rengi Seçin:</label>
+				<div class="tag-selector">
+					<div class="tag-option tag--product1" data-tag="product1"></div>
+					<div class="tag-option tag--product2" data-tag="product2"></div>
+					<div class="tag-option tag--product3" data-tag="product3"></div>
+				</div>
+				<input id="tagColor" type="hidden" />
+
+				<h3 style="display: flex; align-items: center; gap: 12px">
+					Bilgi Kartı Özellikleri (5 adet)
+					<a
+						href="https://ionic.io/ionicons"
+						target="_blank"
+						style="
+							font-size: 14px;
+							text-decoration: underline;
+							color: #0077cc;
+						"
+						>İkon Listesi</a
+					>
+				</h3>
+
+				<div id="attributes"></div>
+
+				<button
+					id="saveProductBtn"
+					type="button"
+					style="
+						margin-top: 20px;
+						background: #333;
+						color: white;
+						font-weight: bold;
+						padding: 15px;
+					"
+				>
+					Ürünü Kaydet
+				</button>
+
+				<p
+					id="result"
+					style="
+						font-weight: bold;
+						text-align: center;
+						margin-top: 10px;
+						min-height: 20px;
+					"
+				></p>
+			</form>
+		</div>
+
+		<script type="module">
+			import {
+				addDoc,
+				collection,
+				getDocs,
+				doc,
+				updateDoc,
+				setDoc,
+				getDoc,
+			} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+			// getStorage buraya eklendi
+			import {
+				getStorage,
+				ref,
+				uploadBytes,
+				getDownloadURL,
+			} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js';
+			import {
+				GoogleAuthProvider,
+				signInWithPopup,
+				onAuthStateChanged,
+				signOut,
+			} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+
+			// ==========================================
+			// LÜTFEN BURAYA KENDİ GMAIL ADRESİNİZİ YAZIN
+			// ==========================================
+			const adminEmails = ['aytacserce@gmail.com', 'y.ergin8995@gmail.com'];
+			// ==========================================
+
+			const attrContainer = document.getElementById('attributes');
+			const productSelect = document.getElementById('productSelect');
+			const loginScreen = document.getElementById('login-screen');
+			const adminContent = document.getElementById('admin-content');
+
+			let allProducts = [];
+			let editingProductId = null;
+			let existingImageUrl = '';
+
+			// --------------------------
+			// 0. AUTH
+			// --------------------------
+			const provider = new GoogleAuthProvider();
+
+			document
+				.getElementById('googleLoginBtn')
+				.addEventListener('click', () => {
+					signInWithPopup(window.auth, provider)
+						.then((result) => checkUser(result.user))
+						.catch(
+							(error) =>
+								(document.getElementById('loginError').textContent =
+									error.message)
+						);
+				});
+
+			document.getElementById('logoutBtn').addEventListener('click', () => {
+				signOut(window.auth);
+				location.reload();
+			});
+
+			onAuthStateChanged(window.auth, (user) => checkUser(user));
+
+			function checkUser(user) {
+				if (user) {
+					if (adminEmails.includes(user.email)) {
+						loginScreen.style.display = 'none';
+						adminContent.style.display = 'block';
+						document.getElementById('userEmailDisplay').textContent =
+							'Giriş yapıldı: ' + user.email;
+						loadProducts();
+					} else {
+						document.getElementById('loginError').textContent =
+							'Bu e-posta adresi yetkili değil.';
+						signOut(window.auth);
+					}
+				} else {
+					loginScreen.style.display = 'block';
+					adminContent.style.display = 'none';
+				}
+			}
+
+			// --------------------------
+			// 1. ÖZELLİK KUTULARINI OLUŞTUR
+			// --------------------------
+			for (let i = 0; i < 5; i++) {
+				const div = document.createElement('div');
+				div.className = 'attr-row';
+				div.innerHTML = `
+          <input placeholder="ikon adı" class="attr-icon">
+          <input placeholder="metin" class="attr-text">
+        `;
+				attrContainer.appendChild(div);
+			}
+
+			// --------------------------
+			// 2. ÜRÜNLERİ GETİR
+			// --------------------------
+			async function loadProducts() {
+				try {
+					// 1. Kargo Limitini Çek (Eğer HTML'de input yoksa çökmeyi engelleyen null kontrolü ekledik)
+					const thresholdInput = document.getElementById(
+						'freeShippingThreshold'
+					);
+					if (thresholdInput) {
+						const snap = await getDoc(
+							doc(window.db, 'settings', 'shipping')
+						);
+						if (snap.exists()) {
+							thresholdInput.value = snap.data().threshold || 0;
+						}
+					} else {
+						console.warn(
+							"Kargo limiti input alanı HTML'de bulunamadı, bu adım atlanıyor."
+						);
+					}
+
+					// 2. Ürünleri Getir
+					const querySnapshot = await getDocs(
+						collection(window.db, 'products')
+					);
+					allProducts = [];
+					productSelect.innerHTML =
+						'<option value="new">-- Yeni Ürün Ekle --</option>';
+
+					querySnapshot.forEach((docSnap) => {
+						const data = docSnap.data();
+						allProducts.push({ id: docSnap.id, ...data });
+						const isVisibleStatus = data.isVisible !== false;
+						const statusText = isVisibleStatus ? 'YAYINDA' : 'GİZLİ';
+						const option = document.createElement('option');
+						option.value = docSnap.id;
+						option.textContent = `${data.title} | ${statusText}`;
+						if (!isVisibleStatus) option.style.color = '#999';
+						productSelect.appendChild(option);
+					});
+				} catch (err) {
+					console.error('Ürünler yüklenirken hata:', err);
+					productSelect.innerHTML =
+						'<option value="">HATA: Ürünler yüklenemedi (F12 Konsola bakın)</option>';
+				}
+			}
+			// --------------------------
+			// 3. SEÇİM DEĞİŞİNCE
+			// --------------------------
+			productSelect.addEventListener('change', (e) => {
+				const selectedId = e.target.value;
+				if (selectedId === 'new') {
+					resetForm();
+				} else {
+					const product = allProducts.find((p) => p.id === selectedId);
+					if (product) fillForm(product);
+				}
+			});
+
+			function resetForm() {
+				editingProductId = null;
+				existingImageUrl = '';
+
+				// Temel alanlar
+				document.getElementById('isVisible').value = 'true';
+				document.getElementById('isSoldOut').value = 'false';
+				document.getElementById('title').value = '';
+
+				// Resim
+				document.getElementById('imageFile').value = '';
+				document.getElementById('preview').style.display = 'none';
+				document.getElementById('preview').src = '';
+
+				// Fiyat Alanları
+				document.getElementById('price').value = '';
+				document.getElementById('discount').value = '';
+				document.getElementById('deliveryPrice').value = '';
+
+				// Pricing Features
+				document
+					.querySelectorAll('.pricing-feature')
+					.forEach((input) => (input.value = ''));
+
+				// Etiket
+				document.getElementById('tagText').value = '';
+				document.getElementById('tagColor').value = '';
+				document
+					.querySelectorAll('.tag-option')
+					.forEach((o) => o.classList.remove('selected'));
+
+				// Attributes
+				document.querySelectorAll('.attr-row').forEach((row) => {
+					row.querySelector('.attr-icon').value = '';
+					row.querySelector('.attr-text').value = '';
+				});
+
+				document.getElementById('saveProductBtn').textContent =
+					'Ürünü Kaydet';
+				document.getElementById('saveProductBtn').style.background = '#333';
+				document.getElementById('result').textContent = '';
+			}
+
+			function fillForm(product) {
+				editingProductId = product.id;
+				existingImageUrl = product.image;
+
+				document.getElementById('isVisible').value =
+					product.isVisible !== false ? 'true' : 'false';
+				document.getElementById('isSoldOut').value =
+					product.isSoldOut === true ? 'true' : 'false';
+
+				document.getElementById('title').value = product.title;
+
+				// Fiyatlar
+				document.getElementById('price').value = product.price || '';
+				document.getElementById('discount').value = product.discount || '';
+				document.getElementById('deliveryPrice').value =
+					product.deliveryPrice || '';
+
+				// Pricing Features
+				const pricingInputs = document.querySelectorAll('.pricing-feature');
+				if (product.pricingFeatures && product.pricingFeatures.length > 0) {
+					product.pricingFeatures.forEach((text, index) => {
+						if (pricingInputs[index]) pricingInputs[index].value = text;
+					});
+				} else {
+					pricingInputs.forEach((i) => (i.value = ''));
+				}
+
+				document.getElementById('tagText').value = product.tagText;
+				document.getElementById('tagColor').value = product.tagColor;
+				document.querySelectorAll('.tag-option').forEach((o) => {
+					o.classList.remove('selected');
+					if (o.dataset.tag === product.tagColor)
+						o.classList.add('selected');
+				});
+
+				const preview = document.getElementById('preview');
+				preview.src = product.image;
+				preview.style.display = 'block';
+
+				const rows = document.querySelectorAll('.attr-row');
+				if (product.attributes && product.attributes.length > 0) {
+					product.attributes.forEach((attr, index) => {
+						if (rows[index]) {
+							rows[index].querySelector('.attr-icon').value =
+								attr.icon;
+							rows[index].querySelector('.attr-text').value =
+								attr.text;
+						}
+					});
+				}
+
+				document.getElementById('saveProductBtn').textContent =
+					'Ürünü Güncelle';
+				document.getElementById('saveProductBtn').style.background =
+					'#0077cc';
+				document.getElementById('result').textContent = '';
+			}
+
+			// Tag Selector Click
+			const tagColorInput = document.getElementById('tagColor');
+			document.querySelectorAll('.tag-option').forEach((opt) => {
+				opt.addEventListener('click', () => {
+					document
+						.querySelectorAll('.tag-option')
+						.forEach((o) => o.classList.remove('selected'));
+					opt.classList.add('selected');
+					tagColorInput.value = opt.dataset.tag;
+				});
+			});
+
+			// Image Preview
+			document.getElementById('imageFile').addEventListener('change', (e) => {
+				const file = e.target.files[0];
+				if (!file) return;
+				const preview = document.getElementById('preview');
+				preview.src = URL.createObjectURL(file);
+				preview.style.display = 'block';
+			});
+
+			// Compress
+			function compressImage(file, maxWidth = 800, quality = 0.7) {
+				return new Promise((resolve, reject) => {
+					const reader = new FileReader();
+					reader.readAsDataURL(file);
+					reader.onload = (event) => {
+						const img = new Image();
+						img.src = event.target.result;
+						img.onload = () => {
+							let width = img.width;
+							let height = img.height;
+							if (width > maxWidth) {
+								height = Math.round((height * maxWidth) / width);
+								width = maxWidth;
+							}
+							const canvas = document.createElement('canvas');
+							canvas.width = width;
+							canvas.height = height;
+							const ctx = canvas.getContext('2d');
+							ctx.drawImage(img, 0, 0, width, height);
+							canvas.toBlob(
+								(blob) => {
+									if (!blob) {
+										reject(new Error('Sıkıştırma hatası'));
+										return;
+									}
+									const newFile = new File([blob], file.name, {
+										type: 'image/jpeg',
+										lastModified: Date.now(),
+									});
+									resolve(newFile);
+								},
+								'image/jpeg',
+								quality
+							);
+						};
+						img.onerror = (err) => reject(err);
+					};
+					reader.onerror = (err) => reject(err);
+				});
+			}
+
+			// Upload - Güvenli getStorage modülü kullanılarak güncellendi
+			async function uploadImage(file) {
+				const storage = getStorage(); // Artık window objesi yerine direkt Firebase'den çağırıyoruz
+				const fileRef = ref(
+					storage,
+					'products/' + Date.now() + '-' + file.name
+				);
+				await uploadBytes(fileRef, file);
+				return await getDownloadURL(fileRef); // Asıl URL'yi veren sihirli satır burası!
+			}
+
+			// SAVE
+			document
+				.getElementById('saveProductBtn')
+				.addEventListener('click', async (e) => {
+					e.preventDefault();
+
+					// MEVCUT ALANLAR
+					const title = document.getElementById('title').value.trim();
+					let file = document.getElementById('imageFile').files[0];
+					const tagText = document.getElementById('tagText').value.trim();
+					const tagColor = document
+						.getElementById('tagColor')
+						.value.trim();
+					const isVisible =
+						document.getElementById('isVisible').value === 'true';
+
+					// YENİ ALANLAR
+					const isSoldOut =
+						document.getElementById('isSoldOut').value === 'true';
+					const price = document.getElementById('price').value.trim();
+					const discount = document
+						.getElementById('discount')
+						.value.trim();
+					const deliveryPrice = document
+						.getElementById('deliveryPrice')
+						.value.trim();
+					const freeShippingLimit =
+						Number(
+							document
+								.getElementById('freeShippingThreshold')
+								.value.trim()
+						) || 0;
+					await setDoc(doc(window.db, 'settings', 'shipping'), {
+						threshold: freeShippingLimit,
+					});
+
+					// 3'lü Özellik Dizisi
+					const pricingFeatures = [
+						...document.querySelectorAll('.pricing-feature'),
+					].map((input) => input.value.trim());
+
+					// 5'li Attribute Dizisi
+					const attributes = [
+						...document.querySelectorAll('.attr-row'),
+					].map((row) => ({
+						icon: row.querySelector('.attr-icon').value.trim(),
+						text: row.querySelector('.attr-text').value.trim(),
+					}));
+
+					// KONTROLLER
+					let isImageValid = false;
+					if (editingProductId) {
+						if (file || existingImageUrl) isImageValid = true;
+					} else {
+						if (file) isImageValid = true;
+					}
+
+					// Validasyon
+					if (!title || !isImageValid || !tagText || !tagColor) {
+						document.getElementById('result').textContent =
+							'HATA: Başlık, Resim, Etiket ve Renk zorunludur.';
+						document.getElementById('result').style.color = 'red';
+						return;
+					}
+					const eksikOzellikVar = attributes.some(
+						(attr) => attr.icon === '' || attr.text === ''
+					);
+					if (eksikOzellikVar) {
+						document.getElementById('result').textContent =
+							'HATA: Lütfen 5 Bilgi Kartı özelliğinin hepsini doldurun.';
+						document.getElementById('result').style.color = 'red';
+						return;
+					}
+
+					document.getElementById('result').style.color = 'black';
+					document.getElementById('result').textContent = 'İşleniyor...';
+					document.getElementById('saveProductBtn').disabled = true;
+
+					try {
+						let finalImageUrl = existingImageUrl;
+						if (file) {
+							const compressedFile = await compressImage(
+								file,
+								800,
+								0.7
+							);
+							finalImageUrl = await uploadImage(compressedFile);
+						}
+
+						const productData = {
+							title,
+							image: finalImageUrl,
+							tagText,
+							tagColor,
+							attributes,
+							isVisible,
+							isSoldOut,
+							price,
+							discount,
+							deliveryPrice,
+							pricingFeatures,
+							updatedAt: new Date(),
+						};
+
+						if (editingProductId) {
+							await updateDoc(
+								doc(window.db, 'products', editingProductId),
+								productData
+							);
+							document.getElementById('result').textContent =
+								'Ürün GÜNCELLENDİ!';
+						} else {
+							productData.createdAt = new Date();
+							await addDoc(
+								collection(window.db, 'products'),
+								productData
+							);
+							document.getElementById('result').textContent =
+								'Yeni ürün OLUŞTURULDU!';
+							resetForm();
+						}
+						document.getElementById('result').style.color = 'green';
+						await loadProducts();
+						if (editingProductId) {
+							productSelect.value = editingProductId;
+						}
+					} catch (err) {
+						console.error(err);
+						document.getElementById('result').style.color = 'red';
+						document.getElementById('result').textContent =
+							'Hata: ' + err.message;
+					} finally {
+						document.getElementById('saveProductBtn').disabled = false;
+					}
+				});
+		</script>
+	</body>
+</html>
